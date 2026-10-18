@@ -6,7 +6,7 @@ import { mkdirSync, openSync, closeSync, unlinkSync, statSync, existsSync } from
 import { setTimeout as delay } from 'node:timers/promises';
 import { homedir } from 'node:os';
 import { randomUUID } from 'node:crypto';
-import { host, focusRoom } from './host.mjs';
+import { host, focusRoom, matchingPane } from './host.mjs';
 import { resolveSession, sessionFiles, records, putRecord, live } from './state.mjs';
 
 const { values: args } = parseArgs({ options: {
@@ -27,8 +27,10 @@ try {
   if (!statSync(cwd).isDirectory()) throw new Error('Working directory is not a directory');
   const id = selected?.id ?? randomUUID();
   const old = records(state).find(r => r.id === id);
-  if (live(old)) {
-    focusRoom(args.host, old);
+  const identity = { id, file: selected?.file ?? old?.file };
+  const hostBinding = matchingPane(host(args.host, ['api', 'snapshot']).snapshot, identity);
+  if (hostBinding || live(old)) {
+    focusRoom(args.host, identity);
     console.log(JSON.stringify({ id, focused: true }));
   } else {
     if (old?.launchPending || existsSync(join(state, `${encodeURIComponent(id)}.owner`))) throw new Error('Uncertain previous launch/owner: inspect proof state before recovery');

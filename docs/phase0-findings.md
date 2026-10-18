@@ -1,5 +1,7 @@
 # Phase 0 findings and recommended design
 
+**Follow-up:** [remaining-gate results](phase0-followup.md) supersede the unverified busy/modal/recovery rows below. Herdr-native restore lost the explicit Rooms extension; recommend Rooms-owned recovery. The original matrix is retained as the first experiment record.
+
 ## Verdict: conditional go
 
 The central technical direction works: full interactive Pi processes in full-size Herdr tabs, native extension UI, session-identity navigation and exact resume. Proceed to V1 planning, **not a production release of this proof**. Human-first messaging configuration, crash-safe ownership and restore coordination need explicit follow-up.

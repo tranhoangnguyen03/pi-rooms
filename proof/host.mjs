@@ -8,11 +8,17 @@ export function host(name, args) {
   return result.result;
 }
 
+export function matchingPane(snapshot, record) {
+  const matches = snapshot.panes.filter(p => p.agent === 'pi' && (
+    (p.agent_session?.kind === 'path' && p.agent_session.value === record.file) ||
+    (p.agent_session?.kind === 'id' && p.agent_session.value === record.id)));
+  if (matches.length > 1) throw new Error('Multiple live host bindings: inspect duplicate sessions');
+  return matches[0];
+}
+
 export function focusRoom(name, record) {
   const snapshot = host(name, ['api', 'snapshot']).snapshot;
-  const pane = snapshot.panes.find(p =>
-    (p.agent_session?.kind === 'path' && p.agent_session.value === record.file) ||
-    (p.agent_session?.kind === 'id' && p.agent_session.value === record.id));
+  const pane = matchingPane(snapshot, record);
   // A launch-time pane can move; refuse stale mappings rather than focusing a different occupant.
   if (!pane) throw new Error('No verified live Herdr binding for this session');
   return host(name, ['tab', 'focus', pane.tab_id]);
