@@ -1,0 +1,9 @@
+{
+  "name": "pi-rooms-phase0",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Disposable native Pi / Herdr integration proof, not a production launcher",
+  "scripts": { "test": "node --test test/*.test.mjs", "proof": "node proof/cli.mjs" },
+  "engines": { "node": ">=22" }
+}
